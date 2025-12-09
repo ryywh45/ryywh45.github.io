@@ -11,4 +11,4 @@ tags:
 ---
 666
 
-![](Pasted%20image%2020251209170939.png)
+![](test.png)
