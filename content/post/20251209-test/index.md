@@ -15,4 +15,4 @@ tags:
 
 777
 
-![](./image-1.png)
+![](image.png)
