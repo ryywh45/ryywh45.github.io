@@ -1,0 +1,9 @@
+---
+import BaseLayout from './BaseLayout.astro';
+const { frontmatter } = Astro.props;
+---
+<BaseLayout title={frontmatter.title}>
+  <article class="prose prose-invert prose-zinc max-w-none">
+    <slot />
+  </article>
+</BaseLayout>

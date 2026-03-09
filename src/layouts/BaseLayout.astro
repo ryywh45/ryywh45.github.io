@@ -1,11 +1,40 @@
 ---
 import '../styles/global.css';
+import { getCollection } from 'astro:content';
 
 interface Props {
   title?: string;
 }
 
-const { title = 'James.dev' } = Astro.props;
+const { title = 'james@blog' } = Astro.props;
+
+const posts = await getCollection('blog');
+const categories = [...new Set(
+  posts
+    .map(p => p.id.includes('/') ? p.id.split('/')[0] : null)
+    .filter(Boolean)
+)].sort() as string[];
+
+const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+const rawPath = Astro.url.pathname.replace(base, '').replace(/\/$/, '') || '/';
+
+// Compute the display path for the prompt
+let promptPath: string;
+if (rawPath === '/') {
+  promptPath = '~/';
+} else if (rawPath.startsWith('/about')) {
+  promptPath = '~/about.md';
+} else if (rawPath.startsWith('/blog/')) {
+  // /blog/category/slug → ~/category/slug
+  promptPath = '~' + rawPath.replace('/blog', '');
+} else {
+  promptPath = '~' + rawPath + '/';
+}
+
+function isActive(href: string) {
+  const normalized = (base + href).replace(/\/$/, '') || '/';
+  return Astro.url.pathname.replace(/\/$/, '') === normalized;
+}
 ---
 
 <!doctype html>
@@ -13,14 +42,42 @@ const { title = 'James.dev' } = Astro.props;
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>{title}</title>
+    <link rel="icon" type="image/svg+xml" href={`${base}/favicon.svg`} />
+    <title>{title === 'james@blog' ? 'james@blog' : `${title} — james@blog`}</title>
   </head>
   <body class="bg-zinc-900 text-zinc-100 min-h-screen">
     <header class="border-b border-zinc-800">
-      <div class="max-w-3xl mx-auto px-6 py-4">
-        <a href={`${import.meta.env.BASE_URL}`} class="text-lg font-bold tracking-tight text-zinc-100 hover:text-zinc-300">
-          James.dev
-        </a>
+      <div class="max-w-3xl mx-auto px-6 py-5 space-y-2 font-mono text-sm">
+
+        <!-- Line 1: prompt with current path -->
+        <div class="flex items-center gap-0">
+          <span class="text-emerald-400">james@blog</span>
+          <span class="text-zinc-600">:</span>
+          <span class="text-sky-400">{promptPath}</span>
+          <span class="text-zinc-400">&nbsp;$&nbsp;</span>
+          <span class="text-zinc-100 animate-pulse">█</span>
+        </div>
+
+        <!-- Line 2: directory nav -->
+        <div class="flex items-center gap-3 flex-wrap">
+          <a
+            href={`${base}/`}
+            class:list={['transition-colors', isActive('/') ? 'text-zinc-100' : 'text-zinc-500 hover:text-zinc-300']}
+          >~/</a>
+
+          {categories.map(cat => (
+            <a
+              href={`${base}/${cat}/`}
+              class:list={['transition-colors', isActive(`/${cat}`) ? 'text-zinc-100' : 'text-zinc-500 hover:text-zinc-300']}
+            >~/{cat}/</a>
+          ))}
+
+          <a
+            href={`${base}/about/`}
+            class:list={['transition-colors', isActive('/about') ? 'text-zinc-100' : 'text-zinc-500 hover:text-zinc-300']}
+          >~/about.md</a>
+        </div>
+
       </div>
     </header>
     <main class="max-w-3xl mx-auto px-6 py-10">
