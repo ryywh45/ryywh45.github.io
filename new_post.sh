@@ -11,7 +11,7 @@ fi
 
 cat > "$FILE" << EOF
 ---
-title: "[Daily] "
+title: ""
 pubDate: ${DATE}
 description: ""
 ---

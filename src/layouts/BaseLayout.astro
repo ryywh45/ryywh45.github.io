@@ -31,9 +31,18 @@ if (rawPath === '/') {
   promptPath = '~' + rawPath + '/';
 }
 
+// Determine which nav item should be active
+let activeSection: string;
+if (rawPath.startsWith('/blog/')) {
+  const parts = rawPath.replace('/blog/', '').split('/');
+  // /blog/dev/slug → /dev  |  /blog/slug → /
+  activeSection = parts.length >= 2 ? '/' + parts[0] : '/';
+} else {
+  activeSection = rawPath;
+}
+
 function isActive(href: string) {
-  const normalized = (base + href).replace(/\/$/, '') || '/';
-  return Astro.url.pathname.replace(/\/$/, '') === normalized;
+  return activeSection === (href.replace(/\/$/, '') || '/');
 }
 ---
 
@@ -43,7 +52,7 @@ function isActive(href: string) {
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <link rel="icon" type="image/svg+xml" href={`${base}/favicon.svg`} />
-    <title>{title === 'james@blog' ? 'james@blog' : `${title} — james@blog`}</title>
+    <title>{title}</title>
   </head>
   <body class="bg-zinc-900 text-zinc-100 min-h-screen">
     <header class="border-b border-zinc-800">
@@ -51,11 +60,12 @@ function isActive(href: string) {
 
         <!-- Line 1: prompt with current path -->
         <div class="flex items-center gap-0">
-          <span class="text-emerald-400">james@blog</span>
-          <span class="text-zinc-600">:</span>
-          <span class="text-sky-400">{promptPath}</span>
-          <span class="text-zinc-400">&nbsp;$&nbsp;</span>
+          <span class="text-green-400 font-bold">james@blog</span>
+          <span class="text-white">:</span>
+          <span class="text-blue-400 font-bold">{promptPath}</span>
+          <span class="text-white">&nbsp;$&nbsp;</span>
           <span class="text-zinc-100 animate-pulse">█</span>
+          <!-- <span class="w-2 h-4 bg-gray-400 animate-pulse inline-block align-middle"></span> -->
         </div>
 
         <!-- Line 2: directory nav -->

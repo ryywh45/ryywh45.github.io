@@ -14,7 +14,7 @@ const { post } = Astro.props;
 const { Content } = await render(post);
 ---
 
-<BaseLayout title={post.data.title}>
+<BaseLayout title={`/${post.id.includes('/') ? post.id.split('/')[0] + '/' : ''}${post.data.title}`}>
   <article>
     <header class="mb-8">
       <time datetime={post.data.pubDate.toISOString().slice(0, 10)} class="text-sm text-zinc-500 font-mono">
