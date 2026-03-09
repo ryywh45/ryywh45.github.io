@@ -1,0 +1,25 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../layouts/BaseLayout.astro';
+
+const posts = (await getCollection('blog')).sort(
+  (a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf()
+);
+---
+
+<BaseLayout title="Dev Diary">
+  <ul class="space-y-3">
+    {posts.map((post) => (
+      <li>
+        <a href={`${import.meta.env.BASE_URL}blog/${post.id}/`} class="flex items-baseline gap-4 group">
+          <time datetime={post.data.pubDate.toISOString().slice(0, 10)} class="shrink-0 text-sm text-zinc-500 font-mono">
+            {post.data.pubDate.toISOString().slice(0, 10)}
+          </time>
+          <span class="text-zinc-300 group-hover:text-zinc-100">
+            {post.data.title}
+          </span>
+        </a>
+      </li>
+    ))}
+  </ul>
+</BaseLayout>
