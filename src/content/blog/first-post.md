@@ -1,7 +1,7 @@
 ---
-title: "blog起點"
-pubDate: 2026-03-10
-description: "簡單紀錄寫blog的動機跟打算怎麼做"
+title: blog起點
+pubDate: 2026-03-09
+description: 簡單紀錄寫blog的動機跟打算怎麼做
 ---
 
 ### 動機
