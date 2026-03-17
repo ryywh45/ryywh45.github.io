@@ -2,7 +2,18 @@
 set -euo pipefail
 
 DATE=$(date +%Y-%m-%d)
-FILE="src/content/blog/${DATE}.md"
+
+if [ $# -gt 0 ]; then
+  DIR="src/content/blog/$1"
+  if [ ! -d "$DIR" ]; then
+    echo "Directory does not exist: $DIR"
+    echo "Create it with: mkdir -p $DIR"
+    exit 1
+  fi
+  FILE="$DIR/${DATE}.md"
+else
+  FILE="src/content/blog/${DATE}.md"
+fi
 
 if [ -f "$FILE" ]; then
   echo "Post already exists: $FILE"
@@ -16,15 +27,12 @@ pubDate: ${DATE}
 description: ""
 ---
 
-### 今天做了什麼
+### 做了什麼
 
 -
 
-### 筆記
+### 筆記/心得
 
-### 明日待辦
-
-- [ ]
 EOF
 
 echo "Created: $FILE"
